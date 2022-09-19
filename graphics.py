@@ -1,8 +1,5 @@
-from cgitb import text
-from mimetypes import init
 from tkinter import *
 import math
-from tracemalloc import start
 #WORK IN PROGRESS
 
 #cell class

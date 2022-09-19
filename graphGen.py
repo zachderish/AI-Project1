@@ -35,7 +35,7 @@ def randomPoints(xSize, ySize):
     return coor
 
 #writing text files
-def writeFile(number, sqaures, rows, cols):
+def writeFile(number, squares, rows, cols, coor):
     name = "graph" + str(number) + ".txt"
     with open(name,'w') as f:
         #writing start and end points, plus size of graph
@@ -58,18 +58,21 @@ def writeFile(number, sqaures, rows, cols):
             f.write('\n')
 
 
-rows = input("Enter number of rows: ")
-cols = input("Enter number of columns: ")
-squareNum = input("Enter number of squares: ")
+def main(): 
+    #user input
+    rows = input("Enter number of rows: ")
+    cols = input("Enter number of columns: ")
+    squareNum = input("Enter number of graphs: ")
 
-for x in range(int(squareNum)):
-    #call to generate squares
-    rows = int(rows)
-    cols = int(cols)
-    squares = genSquares(rows, cols)
+    for x in range(int(squareNum)):
+        #call to generate squares
+        rows = int(rows)
+        cols = int(cols)
+        squares = genSquares(rows, cols)
 
-    #calls randomPoints for start and end points
-    coor = randomPoints(rows, cols)
+        #calls randomPoints for start and end points
+        coor = randomPoints(rows, cols)
 
-    #writes the .txt files for each graph
-    writeFile(x, squares, rows, cols)
+        #writes the .txt files for each graph
+        writeFile(x, squares, rows, cols, coor)
+main()

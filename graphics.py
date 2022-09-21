@@ -29,8 +29,8 @@ def createPoints(startCoor, endCoor, canvas, dimFactor):
     canvas.create_text(x2*dimFactor+50, y2*dimFactor+20, text=message2)
 
     #creates dots
-    canvas.create_oval(x1*dimFactor-1, y1*dimFactor-1, x1*dimFactor+5, y1*dimFactor+5,fill='green')
-    canvas.create_oval(x2*dimFactor-1, y2*dimFactor-1, x2*dimFactor+5, y2*dimFactor+5,fill='red')
+    canvas.create_oval(x1*dimFactor-5, y1*dimFactor-5, x1*dimFactor+5, y1*dimFactor+5,fill='green')
+    canvas.create_oval(x2*dimFactor-5, y2*dimFactor-5, x2*dimFactor+5, y2*dimFactor+5,fill='red')
 
 def createGraph(root, dimensions, startCoor, endCoor, closed):
     #create canvas widget

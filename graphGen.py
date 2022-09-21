@@ -10,16 +10,21 @@ class Square:
 #generate if square is closed or open
 def genSquares(xSize, ySize):
     squares = []
+    numCells = int(xSize*ySize)
+    #generate 10% random closed cells 
+    randoms = random.sample(range(0,numCells),int(numCells*.1))
+    print(len(randoms))
+    counter = 0
     for row in range(xSize):
         for col in range(ySize):
             closed = 0
-            odds = random.random()
-            #10 percent chance square is closed
-            if(odds <= .1):
+            #check if cell is closed
+            if counter in randoms:
                 closed = 1
             #add Square object to squares array
             square = Square(closed, row, col)
             squares.append(square)
+            counter+=1
     return squares
 
 

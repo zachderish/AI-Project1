@@ -55,9 +55,9 @@ def writeFile(number, squares, rows, cols, coor):
         f.write('\n')
         #iterate to write squares' location and their closed status
         for square in range(len(squares)):
-            f.write(str(squares[square].x))
+            f.write(str(squares[square].x+1))
             f.write(" ")
-            f.write(str(squares[square].y))
+            f.write(str(squares[square].y+1))
             f.write(" ")
             f.write(str(squares[square].closed))
             f.write('\n')

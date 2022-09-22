@@ -6,8 +6,8 @@ import math
 class Cell():
     def __init__(self, closed, x, y):
         self.closed = closed
-        self.x = x
-        self.y = y
+        self.x = x-1
+        self.y = y-1
 
 #create cell
 def createCell(cell, my_canvas, dimFactor):

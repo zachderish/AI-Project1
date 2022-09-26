@@ -44,5 +44,12 @@ class MinHeap:
       
     def isEmpty(self):
         return len(self.heap) == 0
+      
+          def contains(self, item):
+        for i in self.heap:
+            if i == item:
+                return True
+        return False
+
 
 # This code is contributed by Nikhil Kumar Singh(nickzuck_007)

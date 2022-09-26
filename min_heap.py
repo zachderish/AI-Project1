@@ -41,5 +41,8 @@ class MinHeap:
     # Get the minimum element from the heap
     def getMin(self):
         return self.heap[0]
+      
+    def isEmpty(self):
+        return len(self.heap) == 0
 
 # This code is contributed by Nikhil Kumar Singh(nickzuck_007)

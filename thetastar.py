@@ -1,24 +1,6 @@
 import heap
 import math
 
-
-
-file = open('graph0.txt', 'r')
-start = tuple(map(int, file.readline().split()))
-goal = tuple(map(int, file.readline().split()))
-dim = tuple(map(int, file.readline().split()))
-
-blocked = []
-while True:
-    line = file.readline()
-    if not line:
-        break
-    x = line.split()
-    
-    if int(x[2]) == 1:
-        pos = int(x[0]), int(x[1])
-        blocked.append(pos)
-
 class node:
     def __init__(self, position, hvalue, gvalue, parent):
         self.position = position
@@ -97,13 +79,13 @@ def line_of_sight(pos1, pos2, blocked):
             y0 = y0 + sy
     return True
 
-def isBlocked(position):
+def isBlocked(position, blocked):
     if position in blocked:
         return True
     return False
 
 #finds if node is available to travel to, also make sure not off grid
-def isOpen(position, child, dimensions):
+def isOpen(position, child, dimensions, blocked):
 
     # check off grid or not
     cx, cy = child
@@ -119,32 +101,32 @@ def isOpen(position, child, dimensions):
     px, py = position
 
     if cx-px == 1 and cy-py == 1:
-        return not isBlocked(position)
+        return not isBlocked(position, blocked)
     
     if cx-px == 0 and cy-py == 1:
-        return not isBlocked(position) or not isBlocked((px-1,py))
+        return not isBlocked(position, blocked) or not isBlocked((px-1,py), blocked)
 
     if cx-px == -1 and cy-py == 1:
-        return not isBlocked((px-1,py))
+        return not isBlocked((px-1,py), blocked)
 
     if cx-px == -1 and cy-py == 0:
-        return not isBlocked((px-1,py)) or not isBlocked((px-1,py-1))
+        return not isBlocked((px-1,py), blocked) or not isBlocked((px-1,py-1), blocked)
 
     if cx-px == -1 and cy-py == -1:
-        return not isBlocked((px-1,py-1))
+        return not isBlocked((px-1,py-1), blocked)
 
     if cx-px == 0 and cy-py == -1:
-        return not isBlocked((px,py-1)) or not isBlocked((px-1,py-1))
+        return not isBlocked((px,py-1), blocked) or not isBlocked((px-1,py-1), blocked)
 
     if cx-px == 1 and cy-py == -1:
-        return not isBlocked((px,py-1))
+        return not isBlocked((px,py-1), blocked)
 
     if cx-px == 1 and cy-py == 0:
-        return not isBlocked((px,py-1)) or not isBlocked(position)
+        return not isBlocked((px,py-1), blocked) or not isBlocked(position, blocked)
 
 
 #return a list of valid children positions
-def findChildren(Node, goal, dimensions):
+def findChildren(Node, goal, dimensions, blocked):
     listOfChildren = []
     position = Node.position
     x, y = position
@@ -157,13 +139,13 @@ def findChildren(Node, goal, dimensions):
                 child = row,col
                 
                 #print(isOpen(position,child, dimensions))
-                if isOpen(position, child, dimensions):
+                if isOpen(position, child, dimensions, blocked):
                     listOfChildren.append(child)
 
     return listOfChildren
     
 
-def updateVertex(nodeA, nodeB, openList):
+def updateVertex(nodeA, nodeB, openList, blocked):
     posA = nodeA.position
     posB = nodeB.position
     
@@ -191,7 +173,23 @@ def updateVertex(nodeA, nodeB, openList):
         
             openList.insert(nodeB)
 
-def main():
+def main(file):
+    #get basic graph info
+    start = tuple(map(int, file.readline().split()))
+    goal = tuple(map(int, file.readline().split()))
+    dim = tuple(map(int, file.readline().split()))
+
+
+    blocked = []
+    while True:
+        line = file.readline()
+        if not line:
+            break
+        x = line.split()
+        
+        if int(x[2]) == 1:
+            pos = int(x[0]), int(x[1])
+            blocked.append(pos)
     
     openList = heap.heap()
     
@@ -218,7 +216,7 @@ def main():
 
         closedList.append(exploringNode)
 
-        children = findChildren(exploringNode, goal, dim)
+        children = findChildren(exploringNode, goal, dim, blocked)
         for i in children:
             # Check if i is in closedList
             skip_i = False
@@ -233,8 +231,9 @@ def main():
             if not openList.contains(node(i,0,0,None)):
                 child = node(i, findH(i, goal), float('inf'), None)
                 openList.insert(child)
-            updateVertex(exploringNode, child, openList)
+            updateVertex(exploringNode, child, openList, blocked)
 
+    path = []
     # if path found, final node is goal node
     if final_node is None:
         print("no path found")
@@ -244,14 +243,15 @@ def main():
         i = final_node
         while i is not None:
             print(i.position)
+            path.append(i.position)
             i = i.parent
 
 
     
     print('Nodes Traversed: ', nodes_traversed)
+    return path
 
 
+#main()
 
-main()
-
-file.close()
+#file.close()

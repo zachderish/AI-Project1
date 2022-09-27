@@ -1,6 +1,7 @@
 from tkinter import *
 import math
 import julian_astar_sept_26
+import thetastar
 #WORK IN PROGRESS
 
 file = None 
@@ -68,14 +69,18 @@ def createGraph(root, dimensions, startCoor, endCoor, closed, nodes):
     root.mainloop()
 
 #read user input and text file
-def getText(root, file):
+def getText(root, file, alg):
     path = file
 
     #store coordinates in lists
    
     with open(path) as f:
         #get nodes from a star
-        nodes = julian_astar_sept_26.main(f)
+        nodes = None
+        if alg == 0:
+            nodes = julian_astar_sept_26.main(f)
+        if alg == 1:
+            nodes = thetastar.main(f)
         print(nodes)
         #read start coor
         dimensions = []
@@ -107,10 +112,10 @@ def getText(root, file):
     f.close()
 
 #create graph btn function 
-def getFile(root, graph):
+def getFile(root, graph, alg):
     print("clicked")
     file = graph.get()
-    getText(root, file)
+    getText(root, file, alg)
 
     
 
@@ -122,10 +127,12 @@ def main():
     #creat entry and button for graph selection
     label = Label(root, width=50, text="file path:")
     graph = Entry(root, width=50)
-    button = Button(root, width=20, text="Create Graph", command= lambda: getFile(root, graph))
+    aButton = Button(root, width=20, text="Run A*", command= lambda: getFile(root, graph, 0))
+    thetaButton = Button(root, width=20, text="Run theta*", command = lambda: getFile(root, graph, 1))
     label.pack()
     graph.pack()
-    button.pack()
+    aButton.pack()
+    thetaButton.pack()
     #create cell input
     cell = Entry(root, width=50)
     btn = Button(root, width=20, text="Get Values at Cell")

@@ -157,7 +157,7 @@ def main():
 
     
     while not openList.isEmpty():
-        print("open list size: ", openList.get_size())
+        #print("open list size: ", openList.get_size())
         exploringNode = openList.pop()
         if exploringNode in closedList:
             continue

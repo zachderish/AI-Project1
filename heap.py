@@ -9,7 +9,7 @@ def swap(list,a,b):
     list[a], list[b] = list[b], list[a]
 
 class heap():
-    def __init__(self) -> None:
+    def __init__(self):
         self.heap = []
         self.heap.append("don't touch the 0 index of a binary heap")
 

@@ -1,6 +1,4 @@
 
-import random
-
 '''
 This is a min heap
 '''
@@ -142,67 +140,3 @@ class heap():
     def listall(self):
         for i in range(len(self.heap)):
             print("index ", i, ": ", self.heap[i])
-
-'''
-testing
-try inserting some stuff, the min heap is a binary tree where the parent is less than its children
-'''
-def main():
-    test = heap()
-    for i in range(10):
-        test.insert(i)
-
-    test.insert(3.2)
-    test.insert(0.8)
-
-    for j in range(len(test.heap)):
-        print(test.heap[j])
-
-    some = []
-    item = test.pop()
-    some.append(item)
-    print('\n')
-    for j in range(len(test.heap)):
-        print(test.heap[j])
-
-
-    j = test.pop()
-    some.append(j)
-    print('\n')
-
-    for j in range(len(test.heap)):
-        print(test.heap[j])
-
-    for i in range(8):
-        p = test.pop()
-        some.append(p)
-
-    print('\n')
-
-    for a in some:
-        print(a)
-#main()
-
-def main2():
-    test = heap()
-    for i in range(20):
-        test.insert(random.randint(1,100000))
-    
-    a = []
-
-    num = 0
-    while num < 100000:
-        test.insert(num)
-        num += 10000
-    
-    num2 = 0
-    while num2 < 100000:
-        test.remove(num2)
-        num2 += 10000
-
-    for i in range(test.get_size()):
-        a.append(test.pop())
-    for i in a:
-        print(i)
-
-#main2()

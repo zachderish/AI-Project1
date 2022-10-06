@@ -2,6 +2,8 @@ from tkinter import *
 import math
 import julian_astar_sept_26
 import thetastar
+from julian_astar_sept_26 import node as nodeA
+from thetastar import node as nodeTheta
 #WORK IN PROGRESS
 
 file = None 
@@ -43,9 +45,17 @@ def createLines(startCoor, endCoor, canvas, dimFactor):
 
     canvas.create_line(x1*dimFactor, y1*dimFactor, x2*dimFactor, y2*dimFactor, fill='red')
 
-def createGraph(root, dimensions, startCoor, endCoor, closed, nodes):
+def createGraph(root, dimensions, startCoor, endCoor, closed, path, nodes):
     #create canvas widget
     my_canvas = Canvas(root, height=1500, width=1500, bg="white")
+    my_canvas.delete("all")
+    
+    #create cell input
+    node = Entry(root, width=50)    
+    btn = Button(root, width=20, text="Get Values at Cell", command = lambda: getValues(my_canvas, node, nodes))
+    node.pack()
+    btn.pack()
+
     my_canvas.pack(pady=20)
 
     #ensure equally spaced cells
@@ -62,26 +72,40 @@ def createGraph(root, dimensions, startCoor, endCoor, closed, nodes):
 
     #call to create path
     i = 1
-    while i < len(nodes):
-        createLines(nodes[i-1], nodes[i], my_canvas, dimFactor)
+    while i < len(path):
+        createLines(path[i-1], path[i], my_canvas, dimFactor)
         i+=1
 
     root.mainloop()
+
+#get requested values from coordinate
+def getValues(canvas, cell, nodes):
+    print(nodes)
+    cell = cell.get()
+    cell = cell.split(" ")
+    cell = (int(cell[0]), int(cell[1]))
+    for node in nodes:
+        if node.position[0] == cell[0] and node.position[1] == cell[1]:
+            message = str(cell[0]) + "," + str(cell[1]) + " g: " + str(node.gvalue) + " h: " + str(node.hvalue) + " f: " + str((node.hvalue+node.gvalue))
+            print(message)
+            #canvas.create_text(500, 1200, text=message)
 
 #read user input and text file
 def getText(root, file, alg):
     path = file
 
     #store coordinates in lists
-   
     with open(path) as f:
         #get nodes from a star
         nodes = None
+        path = None
         if alg == 0:
-            nodes = julian_astar_sept_26.main(f)
+            path, nodes = julian_astar_sept_26.main(f)
         if alg == 1:
-            nodes = thetastar.main(f)
-        print(nodes)
+            path = thetastar.main(f)
+        #print(path)
+        #print(nodes)
+
         #read start coor
         dimensions = []
         startCoor = []
@@ -106,7 +130,7 @@ def getText(root, file, alg):
             newCell = Cell(int(line[2]), int(line[0]), int(line[1]))
             closed.append(newCell)
         
-        createGraph(root, dimensions, startCoor, endCoor, closed, nodes)
+        createGraph(root, dimensions, startCoor, endCoor, closed, path, nodes)
 
     #print(startCoor, endCoor, dimensions)
     f.close()
@@ -117,14 +141,12 @@ def getFile(root, graph, alg):
     file = graph.get()
     getText(root, file, alg)
 
-    
-
 #store coordinates in lists
 def main():
     root = Tk()
     root.title('A*')
     root.geometry("500x500")
-    #creat entry and button for graph selection
+    #create entry and button for graph selection
     label = Label(root, width=50, text="file path:")
     graph = Entry(root, width=50)
     aButton = Button(root, width=20, text="Run A*", command= lambda: getFile(root, graph, 0))
@@ -134,10 +156,10 @@ def main():
     aButton.pack()
     thetaButton.pack()
     #create cell input
-    cell = Entry(root, width=50)
-    btn = Button(root, width=20, text="Get Values at Cell")
-    cell.pack()
-    btn.pack()
+    #cell = Entry(root, width=50)
+    #btn = Button(root, width=20, text="Get Values at Cell", command= lambda: getValues(root, graph))
+    #cell.pack()
+    #btn.pack()
 
     root.mainloop()
 

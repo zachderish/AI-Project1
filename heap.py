@@ -33,7 +33,7 @@ class heap():
         #print('you popped')
         index = 1
         while True:
-            if index*2 + 1 < len(self.heap)-1:
+            if index*2 + 1 < len(self.heap):
                 # check right and left
                 right_is_min = True
                 if self.heap[index*2 + 1] > self.heap[index*2]:
@@ -52,7 +52,7 @@ class heap():
                         continue
                     else: 
                         break
-            if index*2 < len(self.heap)-1:
+            elif index*2 < len(self.heap):
                 if self.heap[index] > self.heap[index*2]:
                     swap(self.heap, index, index*2)
                     index = index*2
@@ -88,7 +88,7 @@ class heap():
 
         # Check swim down
         while True:
-            if index*2 + 1 < len(self.heap)-1:
+            if index*2 + 1 < len(self.heap):
                 # check right and left
                 right_is_min = True
                 if self.heap[index*2 + 1] > self.heap[index*2]:
@@ -107,7 +107,7 @@ class heap():
                         continue
                     else: 
                         break
-            if index*2 < len(self.heap)-1:
+            if index*2 < len(self.heap):
                 if self.heap[index] > self.heap[index*2]:
                     swap(self.heap, index, index*2)
                     index = index*2

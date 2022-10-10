@@ -1,8 +1,8 @@
 from tkinter import *
 import math
-import julian_astar_sept_26
+import astar
 import thetastar
-from julian_astar_sept_26 import node as nodeA
+from astar import node as nodeA
 from thetastar import node as nodeTheta
 #WORK IN PROGRESS
 
@@ -100,7 +100,7 @@ def getText(root, file, alg):
         nodes = None
         path = None
         if alg == 0:
-            path, nodes = julian_astar_sept_26.main(f)
+            path, nodes = astar.main(f)
         if alg == 1:
             path = thetastar.main(f)
         #print(path)

@@ -134,7 +134,10 @@ def main(file):
     # Used to calculate program run time
     startTime = timeit.default_timer()
 
-    file = open(file)
+    #list for nodes and their values
+    nodes = []
+
+    #file = open(file)
     # Get input from graphics
     start = tuple(map(int, file.readline().split()))
     goal = tuple(map(int, file.readline().split()))
@@ -155,6 +158,7 @@ def main(file):
     openList = heap.heap()
     
     startNode = node(start, findH(start, goal), 0, None)
+    nodes.append(startNode)
     startNode.parent = startNode
 
     openList.insert(startNode)
@@ -181,6 +185,7 @@ def main(file):
                 child = node(i, findH(i, goal), float('inf'), None)
                 if not openList.contains(node(i,0,0,None)):
                     #child = node(i, findH(i, goal), float('inf'), None)
+                    nodes.append(child)
                     openList.insert(child)
                 updateVertex(exploringNode, child, openList)
 
@@ -205,9 +210,9 @@ def main(file):
 
     stopTime = timeit.default_timer()
     print('Program finished in ', stopTime - startTime, "seconds")
+    #start node was not being printed
+    path.append(start)
+    return path, nodes
 
-    return path
 
-
-main("C:\\Python Stuff\\CS 440\\Assignment 1\\graph0.txt")
-
+#main("C:\\Python Stuff\\CS 440\\Assignment 1\\graph0.txt")

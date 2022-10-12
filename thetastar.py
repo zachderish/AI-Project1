@@ -1,12 +1,13 @@
 import heap
 import math
+import timeit
 
 class node:
     def __init__(self, position, hvalue, gvalue, parent):
         self.position = position
         self.hvalue = hvalue
         self.gvalue = gvalue
-        self.parent = parent # Node
+        self.parent = parent
 
     def getf(self):
         return self.gvalue + self.hvalue
@@ -15,10 +16,9 @@ class node:
         self.gvalue = g
     
     def __eq__(self, other):
-        #print("item to compare: ", other.get_position())
+        #print("item to compare: ", other.position)
         return self.position == other.position
     
-
     def __lt__(self, node):
         if self.getf() < node.getf():
             return True
@@ -29,55 +29,27 @@ class node:
             return True
         return False
 
-def findH(start, goal):
-    startx, starty = start
-    goalx, goaly = goal
-    return math.sqrt((pow(startx - goalx,2) + pow(starty - goaly, 2)))
-
-# Given 2d positions pos1 and pos2, tuples, check straight line connected or not
-# returns true if line of sight connected
-# blocked = list of blocked positions
-def line_of_sight(pos1, pos2, blocked):
-    x0, y0 = pos1
-    x1, y1 = pos2
-    f = 0
-    dx = x1 - x0
-    dy = y1 - y0
-    sy = 1
-    sx = 1
-    if dy < 0:
-        dy = -dy
-        sy = -1
-    if dx < 0:
-        dx = -dx
-        sx = -1
-    if dx >= dy:
-        while x0 != x1:
-            f = f + dy
-            if f >= dx:
-                if (x0 + (sx-1)/2, y0 + (sy-1)/2) in blocked:
-                    return False
-                y0 = y0 + sy
-                f = f - dx
-            if f != 0 and (x0 + (sx-1)/2, y0 + (sy-1)/2) in blocked:
-                return False
-            if dy == 0 and (x0 + (sx-1)/2, y0) in blocked and (x0 + (sx-1)/2, y0 - 1) in blocked:
-                return False
-            x0 = x0 + sx
+def min(x, y):
+    if x > y:
+        return y
     else:
-        while y0 != y1:
-            f = f + dx
-            if f > dy:
-                if (x0 + (sx-1)/2, y0 + (sy-1)/2) in blocked:
-                    return False
-                x0 = x0+sx
-                f = f-dy
-            if f != 0 and (x0 + (sx-1)/2, y0 + (sy-1)/2) in blocked:
-                return False
-            if dx == 0 and (x0, y0 + (sy-1)/2) in blocked and (x0 - 1, y0 + (sy-1)/2) in blocked:
-                return False
-            y0 = y0 + sy
-    return True
+        return x
+
+def max(x, y):
+    if x > y:
+        return x
+    else:
+        return y
+
+def findH(p1, p2):
+    x1, y1 = p1
+    x2, y2 = p2
+    return 1.414*min(abs(x1-x2),abs(y1-y2))+max(abs(x1-x2),abs(y1-y2))-min(abs(x1-x2),abs(y1-y2))
+
+def distance(p1, p2):
+    x1, y1 = p1
+    x2, y2 = p2
+    return math.sqrt(pow(abs(x1-x2),2)+pow(abs(y1-y2),2))
 
 def isBlocked(position, blocked):
     if position in blocked:
@@ -124,26 +96,71 @@ def isOpen(position, child, dimensions, blocked):
     if cx-px == 1 and cy-py == 0:
         return not isBlocked((px,py-1), blocked) or not isBlocked(position, blocked)
 
-
-#return a list of valid children positions
-def findChildren(Node, goal, dimensions, blocked):
-    listOfChildren = []
+def findChildren(Node, dim, blocked):
+    listofchildren = []
     position = Node.position
     x, y = position
 
-    #iterate through 8 children, plus node itself
-    for row in range(x-1,x+2):
-        for col in range(y-1,y+2):
-            #make sure node is not its own child
-            if (row != x or col != y):
-                child = row,col
-                
-                #print(isOpen(position,child, dimensions))
-                if isOpen(position, child, dimensions, blocked):
-                    listOfChildren.append(child)
+    places = []
+    places.append((x-1,y))
+    places.append((x,y-1))
+    places.append((x-1,y-1))
+    places.append((x+1,y))
+    places.append((x,y+1))
+    places.append((x+1,y+1))
+    places.append((x-1,y+1))
+    places.append((x+1,y-1))
 
-    return listOfChildren
+    for i in places:
+        if isOpen(position, i, dim, blocked):
+            listofchildren.append(i)
     
+    return listofchildren
+
+# Given 2d positions pos1 and pos2, tuples, check straight line connected or not
+# returns true if line of sight connected
+# blocked = list of blocked positions
+def line_of_sight(pos1, pos2, blocked):
+    x0, y0 = pos1
+    x1, y1 = pos2
+    f = 0
+    dx = x1 - x0
+    dy = y1 - y0
+    sy = 1
+    sx = 1
+    if dy < 0:
+        dy = -dy
+        sy = -1
+    if dx < 0:
+        dx = -dx
+        sx = -1
+    if dx >= dy:
+        while x0 != x1:
+            f = f + dy
+            if f >= dx:
+                if (x0 + (sx-1)/2, y0 + (sy-1)/2) in blocked:
+                    return False
+                y0 = y0 + sy
+                f = f - dx
+            if f != 0 and (x0 + (sx-1)/2, y0 + (sy-1)/2) in blocked:
+                return False
+            if dy == 0 and (x0 + (sx-1)/2, y0) in blocked and (x0 + (sx-1)/2, y0 - 1) in blocked:
+                return False
+            x0 = x0 + sx
+    else:
+        while y0 != y1:
+            f = f + dx
+            if f > dy:
+                if (x0 + (sx-1)/2, y0 + (sy-1)/2) in blocked:
+                    return False
+                x0 = x0+sx
+                f = f-dy
+            if f != 0 and (x0 + (sx-1)/2, y0 + (sy-1)/2) in blocked:
+                return False
+            if dx == 0 and (x0, y0 + (sy-1)/2) in blocked and (x0 - 1, y0 + (sy-1)/2) in blocked:
+                return False
+            y0 = y0 + sy
+    return True
 
 def updateVertex(nodeA, nodeB, openList, blocked):
     posA = nodeA.position
@@ -174,7 +191,15 @@ def updateVertex(nodeA, nodeB, openList, blocked):
             openList.insert(nodeB)
 
 def main(file):
-    #get basic graph info
+
+    # Used to calculate program run time
+    startTime = timeit.default_timer()
+
+    #list for nodes and their values
+    nodes = []
+
+    file = open(file)
+    # Get input from graphics
     start = tuple(map(int, file.readline().split()))
     goal = tuple(map(int, file.readline().split()))
     dim = tuple(map(int, file.readline().split()))
@@ -190,12 +215,13 @@ def main(file):
         if int(x[2]) == 1:
             pos = int(x[0]), int(x[1])
             blocked.append(pos)
-    
+
     openList = heap.heap()
     
-    startH = findH(start, goal)
+    startNode = node(start, findH(start, goal), 0, None)
+    nodes.append(startNode)
+    startNode.parent = startNode
 
-    startNode = node(start, startH, 0, None)
     openList.insert(startNode)
 
     closedList = []
@@ -206,8 +232,6 @@ def main(file):
     while not openList.isEmpty():
         #print("open list size: ", openList.get_size())
         exploringNode = openList.pop()
-        if exploringNode in closedList:
-            continue
         nodes_traversed += 1
         
         if exploringNode.position == goal:
@@ -216,42 +240,40 @@ def main(file):
 
         closedList.append(exploringNode)
 
-        children = findChildren(exploringNode, goal, dim, blocked)
+        children = findChildren(exploringNode, dim, blocked)
         for i in children:
-            # Check if i is in closedList
-            skip_i = False
-            for j in closedList:
-                if i == j.position:
-                    skip_i = True
-                    break
-            # if i in closedList, skip i
-            if skip_i:
-                continue
-
-            if not openList.contains(node(i,0,0,None)):
+            if node(i,0,0,None) not in closedList:
                 child = node(i, findH(i, goal), float('inf'), None)
-                openList.insert(child)
-            updateVertex(exploringNode, child, openList, blocked)
+                if not openList.contains(node(i,0,0,None)):
+                    #child = node(i, findH(i, goal), float('inf'), None)
+                    nodes.append(child)
+                    openList.insert(child)
+                updateVertex(exploringNode, child, openList, blocked)
 
-    path = []
+
     # if path found, final node is goal node
+    path = []
     if final_node is None:
         print("no path found")
     else:
-        print("path found", "goal at ", final_node.position)
+        print("Path found,", "goal at ", final_node.position, ", Tracing from goal to start:")
 
         i = final_node
-        while i is not None:
+        while i.parent is not i:
             print(i.position)
             path.append(i.position)
             i = i.parent
 
 
-    
-    print('Nodes Traversed: ', nodes_traversed)
-    return path
+    # Results Output
+    print('Total Nodes Traversed: ', nodes_traversed)
+    print("Path Length: ", len(path))
+
+    stopTime = timeit.default_timer()
+    print('Program finished in ', stopTime - startTime, "seconds")
+    #start node was not being printed
+    path.append(start)
+    return path, nodes
 
 
-#main()
-
-#file.close()
+main("C:\\Python Stuff\\CS 440\\Assignment 1\\graph0.txt")

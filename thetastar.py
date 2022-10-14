@@ -197,8 +197,7 @@ def main(file):
 
     #list for nodes and their values
     nodes = []
-
-    file = open(file)
+    
     # Get input from graphics
     start = tuple(map(int, file.readline().split()))
     goal = tuple(map(int, file.readline().split()))
@@ -273,7 +272,8 @@ def main(file):
     print('Program finished in ', stopTime - startTime, "seconds")
     #start node was not being printed
     path.append(start)
-    return path, nodes
+    return path
 
+#main()
 
-main("C:\\Python Stuff\\CS 440\\Assignment 1\\graph0.txt")
+#file.close()

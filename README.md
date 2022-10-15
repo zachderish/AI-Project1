@@ -13,5 +13,5 @@ RUN “python graphics.py" # This program visualizes and executes A* on a grid d
 2. Select whether you want to run the A* Algorithm or the Theta* Algorithm
 3. You are also able to input the x and y coordinates of a node to retrieve its values
 
-# red line indicates the route the algorithm took to reach its destination
-# The gray blocks are the “blocked” boxes
+// red line indicates the route the algorithm took to reach its destination
+// The gray blocks are the “blocked” boxes

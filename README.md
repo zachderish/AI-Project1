@@ -1,8 +1,5 @@
 # Intro to AI CS440 - Project1
 
-Dependencies:
-pip install tk
-
 
 
 “graphGen.py” will generate text files of the expected format for the A* to run on.
